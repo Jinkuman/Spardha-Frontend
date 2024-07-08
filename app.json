@@ -11,6 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "KeySchema": [
+      { "AttributeName": "challengeId", "KeyType": "HASH" }
+    ],
     "ios": {
       "supportsTablet": true
     },
