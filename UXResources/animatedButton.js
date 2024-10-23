@@ -20,7 +20,7 @@ const AnimatedButton = ({ onPress }) => {
       {
         translateY: animatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, -100], // Adjusted for proper animation
+          outputRange: [0, -100],
         }),
       },
     ],
@@ -28,14 +28,14 @@ const AnimatedButton = ({ onPress }) => {
 
   const textColor = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#000', '#fff'], // Color transition from black to white
+    outputRange: ['#000', '#fff'],
   });
 
   return (
     <TouchableOpacity style={styles.button} onPress={animate}>
       <View style={styles.buttonInner}>
         <Animated.Text style={[styles.buttonText, { color: textColor }]}>
-          Open Challenge
+          View Picture
         </Animated.Text>
       </View>
       <Animated.View style={[styles.animatedEffect, buttonStyle]} />
@@ -53,13 +53,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     position: 'relative',
     backgroundColor: '#000',
+    width: '70%',
   },
   buttonInner: {
     zIndex: 1,
+    alignItems: 'center'
   },
   buttonText: {
     fontWeight: '900',
     textTransform: 'uppercase',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center'
   },
   animatedEffect: {
     backgroundColor: '#fff',

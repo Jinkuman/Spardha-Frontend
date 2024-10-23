@@ -12,7 +12,10 @@
       "backgroundColor": "#ffffff"
     },
     "KeySchema": [
-      { "AttributeName": "challengeId", "KeyType": "HASH" }
+      {
+        "AttributeName": "challengeId",
+        "KeyType": "HASH"
+      }
     ],
     "ios": {
       "supportsTablet": true
@@ -25,6 +28,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
