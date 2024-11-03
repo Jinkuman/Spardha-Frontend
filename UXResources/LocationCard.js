@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Animated, Easing, StyleSheet } from 'react-native';
-import AnimatedButton from './animatedButton'; // Importing the AnimatedButton
+import AnimatedButton from './animatedButton';
 
-const LocationCard = ({ data, isExpanded, onPress, isDarkMode, navigation }) => { // Add navigation prop
-  const [cardHeight] = useState(new Animated.Value(isExpanded ? 300 : 110)); // Adjust initial height based on expanded state
-  const [cardColor] = useState(new Animated.Value(isExpanded ? 1 : 0)); // Adjust initial color based on expanded state
+const LocationCard = ({ data, isExpanded, onPress, isDarkMode, navigation }) => {
+  const [cardHeight] = useState(new Animated.Value(isExpanded ? 300 : 110));
+  const [cardColor] = useState(new Animated.Value(isExpanded ? 1 : 0));
 
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.parallel([
       Animated.timing(cardHeight, {
-        toValue: isExpanded ? 300 : 110, // Expand to 300px or collapse to 110px
+        toValue: isExpanded ? 300 : 110,
         duration: 600,
         easing: Easing.out(Easing.quad),
         useNativeDriver: false,
       }),
       Animated.timing(cardColor, {
-        toValue: isExpanded ? 1 : 0, // Toggle color based on expansion
+        toValue: isExpanded ? 1 : 0,
         duration: 1000,
         useNativeDriver: false,
       }),
@@ -24,20 +24,32 @@ const LocationCard = ({ data, isExpanded, onPress, isDarkMode, navigation }) => 
 
   const cardBackgroundColor = cardColor.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#d9d9d9', '#3399ff'], 
+    outputRange: ['#d9d9d9', '#3399ff'],
   });
 
   const textColor = isDarkMode ? 'white' : 'black';
 
-  const handleButtonPress = () => {
-    // Navigate to the DetailScreen and pass the data as params
-    navigation.navigate('Detail', { data });
-  };
+  const handleButtonPress = async () => {
+    try {
+      const response = await fetch(`https://06gilu6vxd.execute-api.us-east-2.amazonaws.com/prod/spotted?id=${data.id}`);
+      console.log(response);
+      const fetchedData = await response.json();
+      console.log(fetchedData);
+
+      
+      navigation.navigate('Detail', { data: fetchedData });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+};
+
+  
+
+
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
       <Animated.View style={[styles.card, { height: cardHeight, backgroundColor: cardBackgroundColor }]}>
-        {/* Main Card */}
         <View style={styles.mainCardContent}>
           <View style={styles.textContainer}>
             <Text style={[styles.mainText, { color: textColor }]}>
@@ -52,7 +64,6 @@ const LocationCard = ({ data, isExpanded, onPress, isDarkMode, navigation }) => 
           </View>
         </View>
 
-        {/* Expanded Section */}
         {isExpanded && (
           <View style={styles.expandedSection}>
             <Text style={[styles.expandedText, { color: textColor }]}>
@@ -62,7 +73,6 @@ const LocationCard = ({ data, isExpanded, onPress, isDarkMode, navigation }) => 
               Average Distance Off: {data.averageDistanceOffBy}
             </Text>
 
-            {/* Animated Button */}
             <View style={styles.buttonContainer}>
               <AnimatedButton onPress={handleButtonPress} />
             </View>

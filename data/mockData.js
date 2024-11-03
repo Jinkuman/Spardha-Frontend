@@ -1,11 +1,12 @@
 const spottedMockData = [
     {
-      id: 1,
+      id: "1",
       guesses: 100,
       correctRatio: '85%',
       averageDistanceOffBy: '2.5 miles',
       author: 'John Doe',
       timePublished: '4:03pm',
+      imageUrl: "https://example.com/user-uploaded-image.jpg",
     },
     {
       id: 2,
@@ -14,6 +15,7 @@ const spottedMockData = [
       averageDistanceOffBy: '1.8 miles',
       author: 'Jane Smith',
       timePublished: '5:02am',
+      imageUrl: "https://example.com/user-uploaded-image.jpg",
     },
     {
       id: 3,
@@ -22,6 +24,7 @@ const spottedMockData = [
       averageDistanceOffBy: '3.2 miles',
       author: 'Bob Johnson',
       timePublished: '1:34pm',
+      imageUrl: "https://example.com/user-uploaded-image.jpg",
     },
     {
       id: 4,
@@ -30,6 +33,7 @@ const spottedMockData = [
       averageDistanceOffBy: '1000+ miles',
       author: 'Alice Williams',
       timePublished: '9:53am',
+      imageUrl: "https://example.com/user-uploaded-image.jpg",
     },
     {
       id: 5,
@@ -38,6 +42,7 @@ const spottedMockData = [
       averageDistanceOffBy: '4.0 miles',
       author: 'Charlie Brown',
       timePublished: '12:49pm',
+      imageUrl: "https://example.com/user-uploaded-image.jpg",
     },
   ];
   

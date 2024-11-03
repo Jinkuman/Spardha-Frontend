@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Text, StyleSheet, useColorScheme } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, useColorScheme, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LocationCard from './UXResources/LocationCard';
 import DetailScreen from './Screens/DetailScreen'; // Import DetailScreen
+import CreateSpottedScreen from './Screens/CreateSpottedScreen';
 import spottedMockData from './data/mockData'; // Import mock data
 
 const Stack = createStackNavigator();
@@ -18,7 +19,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: isDarkMode ? '#262626' : '#f5f5f5' }]}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#262626' : '#f5f5f5' }]}> 
       <ScrollView>
         {spottedMockData.map((dataItem, index) => (
           <LocationCard
@@ -31,9 +32,17 @@ const HomeScreen = ({ navigation }) => {
           />
         ))}
       </ScrollView>
+      <View style={styles.buttonContainer}>
+        <Button 
+          title="Create Spotted" 
+          onPress={() => navigation.navigate('Create Spotted')
+          } 
+        />
+      </View>
     </View>
   );
 };
+
 
 const App = () => {
   return (
@@ -41,6 +50,7 @@ const App = () => {
       <Stack.Navigator>
         <Stack.Screen name="Spotted" component={HomeScreen} />
         <Stack.Screen name="Detail" component={DetailScreen} />
+        <Stack.Screen name="Create Spotted" component={CreateSpottedScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -51,11 +61,20 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
   },
-  screenTitle: {
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+  },
+  createContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  createTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
   },
 });
 
