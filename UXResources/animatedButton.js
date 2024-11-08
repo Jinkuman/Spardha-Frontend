@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Animated } from 'react-native';
 
-const AnimatedButton = ({ onPress }) => {
+const AnimatedButton = ({ title, onPress }) => {
   const animatedValue = new Animated.Value(0);
 
   const animate = () => {
@@ -35,7 +35,7 @@ const AnimatedButton = ({ onPress }) => {
     <TouchableOpacity style={styles.button} onPress={animate}>
       <View style={styles.buttonInner}>
         <Animated.Text style={[styles.buttonText, { color: textColor }]}>
-          View Picture
+          {title}
         </Animated.Text>
       </View>
       <Animated.View style={[styles.animatedEffect, buttonStyle]} />

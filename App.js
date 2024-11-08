@@ -35,7 +35,7 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <Button 
           title="Create Spotted" 
-          onPress={() => navigation.navigate('Create Spotted')
+          onPress={() => navigation.navigate('Create a New Spotted')
           } 
         />
       </View>
@@ -50,7 +50,7 @@ const App = () => {
       <Stack.Navigator>
         <Stack.Screen name="Spotted" component={HomeScreen} />
         <Stack.Screen name="Detail" component={DetailScreen} />
-        <Stack.Screen name="Create Spotted" component={CreateSpottedScreen} />
+        <Stack.Screen name="Create a New Spotted" component={CreateSpottedScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

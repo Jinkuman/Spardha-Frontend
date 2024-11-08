@@ -74,7 +74,7 @@ const LocationCard = ({ data, isExpanded, onPress, isDarkMode, navigation }) => 
             </Text>
 
             <View style={styles.buttonContainer}>
-              <AnimatedButton onPress={handleButtonPress} />
+              <AnimatedButton title = "View Spotted" onPress={handleButtonPress} />
             </View>
           </View>
         )}
