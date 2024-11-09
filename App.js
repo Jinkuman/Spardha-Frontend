@@ -7,6 +7,7 @@ import DetailScreen from './Screens/DetailScreen'; // Import DetailScreen
 import CreateSpottedScreen from './Screens/CreateSpottedScreen';
 import spottedMockData from './data/mockData'; // Import mock data
 
+
 const Stack = createStackNavigator();
 
 const HomeScreen = ({ navigation }) => {

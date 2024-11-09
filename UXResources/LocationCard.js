@@ -31,7 +31,7 @@ const LocationCard = ({ data, isExpanded, onPress, isDarkMode, navigation }) => 
 
   const handleButtonPress = async () => {
     try {
-      const response = await fetch(`https://06gilu6vxd.execute-api.us-east-2.amazonaws.com/prod/spotted?id=${data.id}`);
+      const response = await fetch(`https://sji6wc5jk2.execute-api.us-east-2.amazonaws.com/prod/spotted?id=${data.id}`);
       console.log(response);
       const fetchedData = await response.json();
       console.log(fetchedData);

@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import AnimatedButton from '../UXResources/animatedButton';
+import axios from 'axios';
 
 const CreateSpottedScreen = ({ navigation }) => {
     const [hint, setHint] = useState('');
@@ -62,45 +63,53 @@ const CreateSpottedScreen = ({ navigation }) => {
         );
     };
 
-    const handleCreateSpotted = () => {
+    const handleCreateSpotted = async () => {
         if (imageUrl == null) {
-            Alert.alert(
-                "Select an Image!",
-                "You need to select an image for your spotted!",
-                [
-                    { text: "Okay", style: "cancel" }
-                ]
-            )
+          Alert.alert("Select an Image!", "You need to select an image for your spotted!", [{ text: "Okay", style: "cancel" }]);
+          return;
         }
-        else if (location == null) {
-            Alert.alert(
-                "Select a Location!",
-                "You need to select a location for your spotted!",
-                [
-                    { text: "Okay", style: "cancel" }
-                ]
-            )
+        
+        if (location == null) {
+          Alert.alert("Select a Location!", "You need to select a location for your spotted!", [{ text: "Okay", style: "cancel" }]);
+          return;
         }
-        else {
-            Alert.alert(
-                "Create Spotted",
-                "Are you sure you want to create your daily spotted?",
-                [
-                    { text: "Cancel", style: "cancel" },
-                    {
-                        text: "Create", onPress: () => {
-                            console.log('Creating Spotted with:', {
-                                hint,
-                                imageUrl,
-                                location,
-                            });
-                            navigation.goBack();
-                        }
-                    },
-                ]
-            );
+        
+        const spottedData = {
+          id: new Date().getTime().toString(),
+          author: "Ajinkya Dhamdhere",
+          hint: hint,
+          location: location,
+          timePublished: new Date().toISOString(),
+          averageDistanceOffBy: "N/A",
+          imageUrl: imageUrl,
+        };
+        
+        console.log('Attempting to create spotted with data:', spottedData); // Log data to be sent
+        try {
+          const response = await fetch('https://sji6wc5jk2.execute-api.us-east-2.amazonaws.com/prod/spotted', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(spottedData),
+          });
+          
+          console.log('Fetch response:', response); // Log the raw response
+      
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+      
+          const result = await response.json();
+          console.log('Spotted created successfully:', result);
+      
+          Alert.alert("Success", "Spotted created successfully!", [{ text: "OK", onPress: () => navigation.goBack() }]);
+        } catch (error) {
+          console.error('Error creating spotted:', error); // Log the error to diagnose issues
+          Alert.alert("Error", "Failed to create spotted. Please try again.");
         }
-    };
+      };
+      
 
     const handleSelectLocation = (coordinate) => {
         setLocation(coordinate);
@@ -233,7 +242,7 @@ const styles = StyleSheet.create({
         height: 200,
         marginTop: 5,
         marginBottom: 0,
-        borderRadius:10,
+        borderRadius: 10,
     },
     locationText: {
         fontSize: 14,
