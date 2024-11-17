@@ -4,7 +4,6 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import AnimatedButton from '../UXResources/animatedButton';
-import axios from 'axios';
 
 const CreateSpottedScreen = ({ navigation }) => {
     const [hint, setHint] = useState('');
