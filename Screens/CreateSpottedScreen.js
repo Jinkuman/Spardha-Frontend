@@ -85,7 +85,7 @@ const CreateSpottedScreen = ({ navigation }) => {
         
         console.log('Attempting to create spotted with data:', spottedData); // Log data to be sent
         try {
-          const response = await fetch('https://sji6wc5jk2.execute-api.us-east-2.amazonaws.com/prod/spotted', {
+          const response = await fetch('https://9tdvht8x68.execute-api.us-east-2.amazonaws.com/prod/spotted', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

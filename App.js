@@ -1,121 +1,108 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet, Button } from 'react-native';
+import React, { useState } from 'react';
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { Ionicons } from '@expo/vector-icons';
 import LocationCard from './UXResources/LocationCard';
-import DetailScreen from './Screens/DetailScreen';
-import CreateSpottedScreen from './Screens/CreateSpottedScreen';
 import spottedMockData from './data/mockData';
-import SignInScreen from './Screens/SignInScreen';
-import SignUpScreen from './Screens/SignUpScreen';
-import { Amplify, Auth} from 'aws-amplify'
-import { REACT_APP_COGNITO_REGION, REACT_APP_USERPOOL_ID, REACT_APP_WEBCLIENT_ID, 
-  REACT_APP_IDENTITY_POOL_ID, REACT_APP_BUCKET, REACT_APP_BUCKET_REGION , 
-  REACT_APP_COGNITO_DOMAIN , REACT_APP_REDIRECT_SIGN_IN , REACT_APP_REDIRECT_SIGN_OUT} from '@env';
-  
+import CreateSpottedScreen from './Screens/CreateSpottedScreen';
 
+const FeedScreen = ({ navigation }) => (
+  <View style={styles.screenContainer}>
+    <ScrollView>
+      <Text style={styles.sectionTitle}>Today's Spotted</Text>
+      {spottedMockData.map((dataItem, index) => (
+        <LocationCard key={index} data={dataItem} navigation={navigation} />
+      ))}
+    </ScrollView>
+    <TouchableOpacity
+      style={styles.createSpottedButton}
+      onPress={() => navigation.navigate('CreateSpotted')}
+    >
+      <Ionicons name="add-circle" size={50} color="#18b551" />
+    </TouchableOpacity>
+  </View>
+);
 
-console.log("COGNITO REGION:", REACT_APP_COGNITO_REGION);
-console.log("USER POOL ID:", REACT_APP_USERPOOL_ID);
-console.log("WEB CLIENT ID:", REACT_APP_WEBCLIENT_ID);
-console.log("IDENTITY POOL ID:", REACT_APP_IDENTITY_POOL_ID);
-console.log("S3 BUCKET:", REACT_APP_BUCKET);
-console.log("S3 REGION:", REACT_APP_BUCKET_REGION);
-console.log("OAuth Domain:", REACT_APP_COGNITO_DOMAIN);
-console.log("OAuth Redirect SignIn:", REACT_APP_REDIRECT_SIGN_IN);
-console.log("OAuth Redirect SignOut:", REACT_APP_REDIRECT_SIGN_OUT);
+const SettingsScreen = () => (
+  <View style={styles.screenContainer}>
+    <Text style={styles.screenText}>Settings</Text>
+  </View>
+);
 
+const ProfileScreen = () => (
+  <View style={styles.screenContainer}>
+    <Text style={styles.screenText}>Profile</Text>
+  </View>
+);
 
-Amplify.configure({
-  Auth: {
-    region: REACT_APP_COGNITO_REGION,
-    userPoolId: REACT_APP_USERPOOL_ID,
-    userPoolWebClientId: REACT_APP_WEBCLIENT_ID,
-    identityPoolId: REACT_APP_IDENTITY_POOL_ID,
-    // Remove oauth if not in use
-  },
-});
-
-
-
-const Stack = createStackNavigator();
-
-const HomeScreen = ({ navigation }) => {
-  const [expandedCardId, setExpandedCardId] = useState(null);
-
-  const toggleExpand = (id) => {
-    setExpandedCardId(expandedCardId === id ? null : id);
-  };
-
-  return (
-    <View style={styles.container}>
-      <ScrollView>
-        {spottedMockData.map((dataItem, index) => (
-          <LocationCard
-            key={index}
-            data={dataItem}
-            isExpanded={expandedCardId === index}
-            onPress={() => toggleExpand(index)}
-            navigation={navigation}
-          />
-        ))}
-      </ScrollView>
-      <View style={styles.buttonContainer}>
-        <Button 
-          title="Create Spotted" 
-          onPress={() => navigation.navigate('Create a New Spotted')}
-        />
-      </View>
-    </View>
-  );
-};
+const Tab = createBottomTabNavigator();
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      await Auth.currentAuthenticatedUser();
-      setIsAuthenticated(true);
-    } catch (error) {
-      setIsAuthenticated(false);
-    }
-  };
-
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {isAuthenticated ? (
-          <>
-            <Stack.Screen name="Spotted" component={HomeScreen} />
-            <Stack.Screen name="Detail" component={DetailScreen} />
-            <Stack.Screen name="Create a New Spotted" component={CreateSpottedScreen} />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="Sign In" component={SignInScreen} />
-            <Stack.Screen name="Sign Up" component={SignUpScreen} />
-          </>
-        )}
-      </Stack.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let iconName;
+            if (route.name === 'Feed') {
+              iconName = 'images';
+            } else if (route.name === 'Settings') {
+              iconName = 'settings';
+            } else if (route.name === 'Profile') {
+              iconName = 'person';
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: '#18b551', // Sleek blue accent color for active tab
+          tabBarInactiveTintColor: '#B8B8C8', // Softer lavender gray for inactive tabs
+          tabBarStyle: {
+            backgroundColor: '#1e3b28', // Dark, elegant background
+            borderTopWidth: 0,
+          },
+          headerTitle: 'Spotted',
+          headerStyle: {
+            backgroundColor: '#1e3b28',
+          },
+          headerTintColor: '#ffffff',
+          headerTitleAlign: 'center',
+        })}
+      >
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="Feed" component={FeedScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  screenContainer: {
     flex: 1,
-    paddingTop: 50,
+    backgroundColor: '#1f1e21',
+    paddingTop: 20,
+    fontFamily: 'Avenir'
   },
-  buttonContainer: {
+  screenText: {
+    color: 'white',
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: 20,
+    fontFamily: 'Avenir',
+  },
+  sectionTitle: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'Avenir',
+  },
+  createSpottedButton: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
+    bottom: 30,
+    right: 30,
+    backgroundColor: 'transparent',
   },
 });
 
