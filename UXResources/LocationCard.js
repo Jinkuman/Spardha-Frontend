@@ -11,8 +11,11 @@ const LocationCard = ({ data, navigation }) => {
   const handleButtonPress = async () => {
     try {
       const response = await fetch(`https://9tdvht8x68.execute-api.us-east-2.amazonaws.com/prod/spotted?id=${data.id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
       const fetchedData = await response.json();
-      navigation.navigate('Detail', { data: fetchedData });
+      navigation.navigate('DetailScreen', { data: fetchedData });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -23,8 +26,9 @@ const LocationCard = ({ data, navigation }) => {
       <View style={styles.cardContent}>
         <Text style={[styles.mainText, { color: textColor }]}>{data.author}</Text>
         <Image source={{ uri: data.imageUrl }} style={styles.image} />
-
-        <AnimatedButton title={"Guess Location"} onPress={handleButtonPress} />
+        <View style={styles.buttonContainer}>
+          <AnimatedButton title="Guess Location" onPress={handleButtonPress} />
+        </View>
       </View>
     </View>
   );
@@ -34,7 +38,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
     marginVertical: 20,
-    backgroundColor: '#3c3d3d', 
+    backgroundColor: '#3c3d3d',
     padding: 16,
     elevation: 5,
     shadowColor: '#000',
@@ -54,21 +58,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     textAlign: 'center',
     color: '#E0BBE4', // Light purple text color
-  },
-  guessButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#8d42f5',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    marginTop: 10,
-  },
-  guessButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 10,
   },
   buttonContainer: {
     marginTop: 15,

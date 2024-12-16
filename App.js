@@ -6,8 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 import LocationCard from './UXResources/LocationCard';
 import spottedMockData from './data/mockData';
 import CreateSpottedScreen from './Screens/CreateSpottedScreen';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
-const FeedScreen = ({ navigation }) => (
+const MainScreen = ({ navigation }) => (
   <View style={styles.screenContainer}>
     <ScrollView>
       <Text style={styles.sectionTitle}>Today's Spotted</Text>
@@ -37,6 +38,19 @@ const ProfileScreen = () => (
 );
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const FeedStackScreen = () => (
+  <Stack.Navigator
+    screenOptions={{
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      headerShown: false,
+    }}
+  >
+    <Stack.Screen name="Main" component={MainScreen} />
+    <Stack.Screen name="CreateSpotted" component={CreateSpottedScreen} />
+  </Stack.Navigator>
+);
 
 const App = () => {
   return (
@@ -60,16 +74,10 @@ const App = () => {
             backgroundColor: '#1e3b28', // Dark, elegant background
             borderTopWidth: 0,
           },
-          headerTitle: 'Spotted',
-          headerStyle: {
-            backgroundColor: '#1e3b28',
-          },
-          headerTintColor: '#ffffff',
-          headerTitleAlign: 'center',
         })}
       >
         <Tab.Screen name="Profile" component={ProfileScreen} />
-        <Tab.Screen name="Feed" component={FeedScreen} />
+        <Tab.Screen name="Feed" component={FeedStackScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
       </Tab.Navigator>
     </NavigationContainer>

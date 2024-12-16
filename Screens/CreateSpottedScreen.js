@@ -62,53 +62,93 @@ const CreateSpottedScreen = ({ navigation }) => {
         );
     };
 
+    const getSignedUrlAndUpload = async (uri, fileName) => {
+        try {
+            // Call your API endpoint for the signed URL
+            const response = await fetch(
+                `https://YourAPIGatewayEndpoint/spotted?fileName=${fileName}&contentType=image/jpeg`
+            );
+    
+            if (!response.ok) {
+                throw new Error(`Failed to fetch signed URL: ${response.status}`);
+            }
+    
+            const { uploadUrl } = await response.json();
+    
+            // Upload to S3 using the signed URL
+            const imageResponse = await fetch(uri);
+            const blob = await imageResponse.blob();
+    
+            const uploadResponse = await fetch(uploadUrl, {
+                method: 'PUT',
+                body: blob,
+                headers: {
+                    'Content-Type': blob.type,
+                },
+            });
+    
+            if (!uploadResponse.ok) {
+                throw new Error(`Failed to upload image: ${uploadResponse.status}`);
+            }
+    
+            console.log('Image uploaded successfully:', uploadUrl.split('?')[0]);
+            return uploadUrl.split('?')[0]; // The public URL of the uploaded image
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            Alert.alert("Upload Error", "Failed to upload image. Please try again.");
+        }
+    };
+    
+
     const handleCreateSpotted = async () => {
         if (imageUrl == null) {
-          Alert.alert("Select an Image!", "You need to select an image for your spotted!", [{ text: "Okay", style: "cancel" }]);
-          return;
+            Alert.alert("Select an Image!", "You need to select an image for your spotted!", [{ text: "Okay", style: "cancel" }]);
+            return;
         }
-        
+
         if (location == null) {
-          Alert.alert("Select a Location!", "You need to select a location for your spotted!", [{ text: "Okay", style: "cancel" }]);
-          return;
+            Alert.alert("Select a Location!", "You need to select a location for your spotted!", [{ text: "Okay", style: "cancel" }]);
+            return;
         }
-        
+
         const spottedData = {
-          id: new Date().getTime().toString(),
-          author: "Ajinkya Dhamdhere",
-          hint: hint,
-          location: location,
-          timePublished: new Date().toISOString(),
-          averageDistanceOffBy: "N/A",
-          imageUrl: imageUrl,
+            id: new Date().getTime().toString(),
+            author: "Ajinkya Dhamdhere",
+            hint: hint,
+            location: location,
+            timePublished: new Date().toISOString(),
+            averageDistanceOffBy: "N/A",
+            imageUrl: imageUrl,
         };
-        
+
         console.log('Attempting to create spotted with data:', spottedData); // Log data to be sent
         try {
-          const response = await fetch('https://9tdvht8x68.execute-api.us-east-2.amazonaws.com/prod/spotted', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(spottedData),
-          });
-          
-          console.log('Fetch response:', response); // Log the raw response
-      
-          if (!response.ok) {
-            throw new Error(`Request failed with status ${response.status}`);
-          }
-      
-          const result = await response.json();
-          console.log('Spotted created successfully:', result);
-      
-          Alert.alert("Success", "Spotted created successfully!", [{ text: "OK", onPress: () => navigation.goBack() }]);
+            const response = await fetch('https://9tdvht8x68.execute-api.us-east-2.amazonaws.com/prod/spotted', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(spottedData),
+            });
+
+            console.log('Response Status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text(); // Safely read response error
+                throw new Error(`Request failed with status ${response.status}: ${errorText}`);
+            }
+
+            const result = await response.json(); // Parse JSON only if the request is successful
+            console.log('Spotted created successfully:', result);
+
+            Alert.alert("Success", "Spotted created successfully!", [{ text: "OK", onPress: () => navigation.goBack() }]);
         } catch (error) {
-          console.error('Error creating spotted:', error); // Log the error to diagnose issues
-          Alert.alert("Error", "Failed to create spotted. Please try again.");
+            console.error('Error creating spotted:', error.message || error); // Log the error
+            Alert.alert("Error", "Failed to create spotted. Please try again.");
         }
-      };
-      
+    };
+
+
 
     const handleSelectLocation = (coordinate) => {
         setLocation(coordinate);
